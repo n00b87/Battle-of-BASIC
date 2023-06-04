@@ -1,0 +1,91 @@
+'print "hello world"
+
+randomize timer
+
+'print "db0"
+
+xedge=800
+yedge=600
+sprn=1024
+maxspd=4
+
+dim xdr(sprn), ydr(sprn), xpo(sprn), ypo(sprn)
+
+frame_time_start = 0
+n_frames = 0
+frame_rate = 0
+
+
+
+windowed=1
+
+set display xedge, yedge
+
+'print "db1"
+for i=0 to sprn-1
+	xdr(i) = rnd(4)
+	ydr(i) = rnd(4)
+	xpo(i) = 1
+	ypo(i) = 1
+next
+
+'print "db2"
+
+Screen Open 0,xedge,yedge
+'Screen Open 1,xedge,yedge
+
+
+'Load Asset "sprites1.png",1
+'Load Asset "sprites2.png",2
+
+'print "db3"
+Screen 0
+Screen To Back 0
+i = 1
+for xt=0 to xedge step 32
+	for yt=64 to yedge step 32
+     	Sprite sprn+i, xt, yt, 2
+		i = i + 1
+	next
+next
+
+
+'screen 1
+'palette rgb(0,0,0), rgb(255,255,255)
+
+'print "db4"
+Wait Vbl
+wait Key
+
+
+while true
+	'Cls
+	'Cls
+	'print "start"
+   for i=0 to sprn-1
+     sprite 1+i, xpo(i), ypo(i), 3
+     xpo(i)=xpo(i)+xdr(i)
+	 ypo(i)=ypo(i)+ydr(i)
+     if xpo(i)>(xedge-32) then xpo(i)=0
+     if xpo(i)<0 then xpo(i)=(xedge-32)
+     if ypo(i)>(yedge-32) then ypo(i)=0
+     if ypo(i)<50 then ypo(i)=(yedge-32)
+    next
+
+	i=rnd(sprn)
+	xdr(i)=(rnd(8)-4)
+	ydr(i)=(rnd(8)-4)
+    'waitick(32)
+    'if ke(27) then break
+
+	n_frames = n_frames + 1
+	frame_rate = int(n_frames / timer)
+	ink 1
+	Bar 5, 5, 180, 50
+	ink 5
+	Text 10, 50, "FPS: " + Str$(frame_rate)
+	'print "test"
+
+	'Wait Vbl
+
+ wend

@@ -1,0 +1,68 @@
+dim arr1[0 to 999]
+dim arr2[0 to 999]
+
+sub sort(n)
+		tmp = 0
+    	For i = 0 to n-1
+    		For j = i to n-1
+    			If arr1[j] < arr1[i] Then
+    				tmp = arr1[i]
+    				arr1[i] = arr1[j]
+    				arr1[j] = tmp
+    			End If
+    		Next
+    	Next
+    end sub
+
+    sub bubble_sort(n)
+    	counter = n-1
+    	do
+    		hasChanged = 0
+    		i=0
+    		while i < counter
+    			if arr2[i] > arr2[i + 1] then
+    				temp = arr2[i]
+    				arr2[i] = arr2[i + 1]
+    				arr2[i + 1] = temp
+    				hasChanged = 1
+    			end if
+    			i = i + 1
+    		wend
+
+    		counter = counter - 1
+			if hasChanged <> 1 then
+				exit do
+			end if
+    	loop
+    end sub
+
+    'Add some random numbers to the Array
+    Randomize(Timer)
+    For i = 0 to 999
+    	arr1[i] = Rnd(1000)
+    	arr2[i] = arr1[i]
+    Next
+
+    Prints( "Quick Sort in SDLBasic! ..............")
+    'Get start time in milliseconds
+    startTime = Timer()
+    'Run the sort function on the array
+    sort(1000) 'sorts an array of 10 numbers
+    'Get the end time in milliseconds
+    endTime = Timer()
+    'Convert total runtime to seconds
+    time_in_secs = (endTime - startTime) / 1000
+    Prints( "Time: " + time_in_secs)
+    Prints("\n----------------------------------\n")
+    Prints("Bubble Sort in SDLBasic! ..............")
+    'Get start time in milliseconds
+    startTime = Timer()
+    'Run the sort function on the array
+    bubble_sort(1000) 'sorts an array of 10 numbers
+    'Get the end time in milliseconds
+    endTime = Timer()
+    'Convert total runtime to seconds
+    time_in_secs = (endTime - startTime) / 1000
+    Prints("Time: " + time_in_secs)
+    Prints("\n\n")
+    waitkey

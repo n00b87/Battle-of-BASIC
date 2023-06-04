@@ -1,0 +1,132 @@
+Import mojo2
+
+
+Global sprn:Int=1024
+
+' Our program extends or inherits from the built in App class
+Class MyApp Extends App
+
+
+	' the canvas on which we'll be drawing
+	Field tgt:Canvas[2]
+	Field sprite:Image
+	Field tile:Image
+	Field bkg:Image
+	Field xedge:Int
+	Field yedge:Int
+	Field maxspd:Int
+	Field xdr:Int[sprn]
+	Field ydr:Int[sprn]
+	Field xpo:Int[sprn]
+	Field ypo:Int[sprn]
+
+	Field frame_time_start:Int = 0
+	Field n_frames:Int = 0
+	Field frame_rate:Int = 0
+	
+	
+	' OnCreate() is called once at the beginning of the program
+	' It's the usual place to set things up and create or load resources
+	Method OnCreate:Int()
+		xedge = 800
+		yedge = 600
+		maxspd = 4
+		
+		frame_time_start = 0
+		n_frames = 0
+		frame_rate = 0
+
+		SetSwapInterval(0)
+		
+		
+		Local img:Image = Image.Load("sprites.png")
+		
+		tile = New Image(img, 0, 0, 32, 32)
+		sprite = New Image(img, 32, 0, 32, 32)
+		'might need to color key
+		
+		
+		' Create our canvas
+		bkg = New Image(xedge, yedge)
+		tgt[0] = New Canvas(bkg)
+		tgt[1] = New Canvas()
+		
+		tgt[0].SetViewport(0, 0, xedge, yedge)
+		tgt[1].SetViewport(0, 0, xedge, yedge)
+		
+		For Local i:Int = 0 To sprn-1
+			xdr[i] = Rnd(4)
+			ydr[i] = Rnd(4)
+			xpo[i] = 1
+			ypo[i] = 1
+		Next
+     	
+		
+		' OnCreate() requires an integer to be returned. It's usual to return zero if no errors or specific conditions were encountered		
+		Return 0
+	End
+	
+	Method OnUpdate:Int()
+		Return 0
+	End
+
+	
+	' OnRender() is called every frame and is the place to put drawing code
+	Method OnRender:Int()
+		
+		For Local xt:Int = 0 To xedge Step 32
+			For Local yt:Int = 0 To yedge Step 32
+     			tgt[1].DrawImage(tile, xt, yt)
+     		Next
+     	Next
+     	tgt[1].Flush()
+     	
+	
+		'tgt[1].Clear(0, 0, 1)
+		'tgt[1].DrawImage(bkg,0,0)
+		
+		For Local i:Int = 0 To sprn-1
+			tgt[1].DrawImage(sprite, xpo[i], ypo[i])
+			xpo[i]=xpo[i]+xdr[i]
+			ypo[i]=ypo[i]+ydr[i]
+			
+			If xpo[i]>(xedge-32)
+				xpo[i]=0
+			End If
+			
+			If xpo[i]<0
+				xpo[i]=(xedge-32)
+			End If
+			
+			If ypo[i]>(yedge-32)
+				ypo[i]=0
+			End If
+			
+			If ypo[i]<50
+				ypo[i]=(yedge-32)
+			End If
+		Next
+		
+		Local i:Int = Rnd(sprn)
+		xdr[i] = Rnd(8)-4
+		ydr[i] = Rnd(8)-4
+		
+		n_frames = n_frames + 1
+		frame_rate = Int( n_frames / ((Millisecs()+1)/1000))
+		tgt[1].SetColor(0,0,0)
+		tgt[1].DrawRect(5, 5, 180, 50)
+		tgt[1].SetColor(255,255,255)
+		tgt[1].DrawText("FPS: " + String(frame_rate), 10, 10)
+		
+		tgt[1].Flush()
+		
+		
+		Return 0
+	End
+End
+
+
+Function Main:Int()             ' take nothing
+	New MyApp()
+	Return 0                    ' return 0 to indicate everything went fine
+End
